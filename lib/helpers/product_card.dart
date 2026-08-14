@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_mobile/models/product.dart';
+import 'package:pos_mobile/screens/product_detail_screen.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -7,9 +8,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       width: 190,
-
       // height: 288,
       padding: const EdgeInsets.only(top: 20, bottom: 16, left: 16, right: 16),
       decoration: BoxDecoration(
@@ -18,6 +19,7 @@ class ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
+        
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
@@ -62,25 +64,32 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                  
-                ),
+                // decoration: BoxDecoration(
+                //   color: Colors.green,
+                //   borderRadius: BorderRadius.circular(12),
+                // ),
                 child: IconButton(
                   icon: const Icon(
                     Icons.add_rounded,
                     color: Colors.white,
                     size: 20,
                   ),
-                  // style: IconButton.styleFrom(
-                  //   backgroundColor: Colors.green,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.green,
 
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(12),
-                  //   ),
-                  // ),
-                  onPressed: () {},
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailScreen(product: product),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos_mobile/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -127,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 14),
                   ElevatedButton(
                     onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(),));
                       String email = _emailController.text.trim();
                       String password = _passwordController.text;
 
