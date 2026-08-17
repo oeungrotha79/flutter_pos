@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pos_mobile/models/product.dart';
@@ -9,6 +10,9 @@ class ProductDetailScreen extends StatefulWidget {
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
+
+bool _isProductDetailExpanded = false;
+bool _isNutritionExpanded = false;
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int selectedImageIndex = 0;
@@ -26,6 +30,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        ),
+
+        actions: [
+          IconButton(
+            onPressed: () {
+              // Share product
+            },
+            icon: const Icon(Icons.share, color: Colors.black),
+          ),
+
+          const SizedBox(width: 10),
+        ],
+      ),
 
       body: ListView(
         padding: EdgeInsets.zero,
@@ -43,66 +67,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: Stack(
               children: [
                 // Images
-                PageView.builder(
+                CarouselSlider.builder(
                   itemCount: images.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      selectedImageIndex = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return Image.asset(images[index], fit: BoxFit.contain);
-                  },
-                ),
 
-                // Top buttons
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 8,
-                      left: 20,
-                      right: 20,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.arrow_back_ios),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.share),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                  itemBuilder: (context, index, realIndex) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Image.asset(images[index], fit: BoxFit.contain),
+                    );
+                  },
 
-                // Bottom indicators
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(
-                        images.length,
-                        (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: selectedImageIndex == index ? 16 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: selectedImageIndex == index
-                                ? Colors.green
-                                : Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
+                  options: CarouselOptions(
+                    height: 320,
+                    // Infinite scrolling
+                    enableInfiniteScroll: true,
+
+                    // Auto play
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayAnimationDuration: const Duration(
+                      milliseconds: 800,
                     ),
+
+                    // Animation
+                    enlargeCenterPage: false,
+
+                    // Update indicator
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        selectedImageIndex = index;
+                      });
+                    },
+                    viewportFraction: 1.0,
                   ),
                 ),
               ],
@@ -198,42 +194,89 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 const Divider(height: 40),
 
                 // Product Detail
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "Product Detail",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Icon(Icons.keyboard_arrow_down),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isProductDetailExpanded = !_isProductDetailExpanded;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Product Detail",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+
+                      Icon(
+                        _isProductDetailExpanded
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_right,
+                      ),
+                    ],
+                  ),
                 ),
 
-                const SizedBox(height: 10),
-
-                Text(
-                  widget.product.nutrition ??
-                      'No nutrition details are available for this product.',
-                  style: const TextStyle(color: Colors.grey),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: _isProductDetailExpanded
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.product.nutrition ??
+                                  'No product details are available.',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                 ),
 
                 const Divider(height: 40),
 
                 // Nutrition
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children:[
-                    Text(
-                      "Nutritions",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Row(
-                      children: [
-                        Text(widget.product.nutrition ?? ''),
-                        Icon(Icons.arrow_forward_ios, size: 14),
-                      ],
-                    ),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isNutritionExpanded = !_isNutritionExpanded;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Nutritions",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+
+                      Icon(
+                        _isNutritionExpanded
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_right,
+                      ),
+                    ],
+                  ),
+                ),
+
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: _isNutritionExpanded
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.product.nutrition ??
+                                  'No nutrition details are available.',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                 ),
 
                 const Divider(height: 40),

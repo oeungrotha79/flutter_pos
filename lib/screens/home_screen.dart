@@ -497,26 +497,34 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black87,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        items: [
-          for (int index = 0; index < _menus.length; index++)
-            BottomNavigationBarItem(
-              icon: _buildIcon(index),
-              label: _menus[index].label,
-            ),
-        ],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.green,
+          unselectedItemColor: Colors.black87,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          items: [
+            for (int index = 0; index < _menus.length; index++)
+              BottomNavigationBarItem(
+                icon: _buildIcon(index),
+                label: _menus[index].label,
+              ),
+          ],
+        ),
       ),
     );
   }

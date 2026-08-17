@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pos_mobile/screens/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,19 +11,200 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordHidden = true;
-  bool _rememberMe = false;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  bool _isPasswordHidden = true;
+  bool _rememberMe = false;
+
+  Future <void> saveCredential() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('sv11-12.pos_mobile.token', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+    );
   }
 
+  void signIn() async {
+  final String email = 'tha@gmail.com';
+  final String password = '123';
+
+  if (email == _emailController.text &&
+      password == _passwordController.text) {
+    await saveCredential();
+
+    if (!mounted) return;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Success Animation
+                SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Lottie.asset(
+                    'assets/lotties/success.json',
+                    repeat: false,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Title
+                const Text(
+                  'Login Successful!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Description
+                const Text(
+                  'Welcome! You have successfully logged in.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // Continue Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    child: const Text(
+                      'Continue',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  } else {
+    if (!mounted) return;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Error Animation
+                SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Lottie.asset(
+                    'assets/lotties/error_sign.json',
+                    repeat: false,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Title
+                const Text(
+                  'Login Failed',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Description
+                const Text(
+                  'The email or password you entered is incorrect. Please try again.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // Try Again Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                    },
+                    child: const Text(
+                      'Try Again',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -127,14 +310,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 14),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(),));
-                      String email = _emailController.text.trim();
-                      String password = _passwordController.text;
-
-                      print("Email: $email");
-                      print("Password: $password");
-                    },
+                    onPressed: signIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white,

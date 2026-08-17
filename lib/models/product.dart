@@ -10,6 +10,7 @@ class Product {
   bool _isFavorite = false;
   int _quantity =1;
 
+
   Product({
     required this.id,
     required this.name,
@@ -23,6 +24,7 @@ class Product {
 
   bool get isFavorite => _isFavorite;
   int get quantity => _quantity;
+  
   void toggleProduct()=> _isFavorite = !isFavorite;
   void increaseQty()=> _quantity ++;
   void decreaseQty() {

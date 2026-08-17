@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pos_mobile/screens/home_screen.dart';
 import 'package:pos_mobile/screens/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,7 +28,15 @@ void _init() async {
   setState(() { });
   await Future.delayed(Duration(seconds: 2));
   if(!mounted) return;
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('sv11-12.pos_mobile.token');
+  if(!mounted) return;
+  if(token==null){
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route)=> false);
+  }else{
+  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen(),), (route)=> false);
+  }
+
 }
   @override
   Widget build(BuildContext context) {
