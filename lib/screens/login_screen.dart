@@ -121,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       },
     );
+  
   } else {
     if (!mounted) return;
 
@@ -139,8 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // Error Animation
                 SizedBox(
-                  height: 150,
-                  width: 150,
+                  height: 120,
+                  width: 120,
                   child: Lottie.asset(
                     'assets/lotties/error_sign.json',
                     repeat: false,
@@ -203,6 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       },
     );
+  
   }
 }
 

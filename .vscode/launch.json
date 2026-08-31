@@ -8,18 +8,24 @@
         {
             "name": "pos_mobile",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}"
         },
         {
             "name": "pos_mobile (profile mode)",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
             "flutterMode": "profile"
         },
         {
             "name": "pos_mobile (release mode)",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
             "flutterMode": "release"
         }
     ]
